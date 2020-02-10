@@ -1,0 +1,160 @@
+# Fichier de configuration pour le modele DELSEN 
+#
+#  derniere modification: 09/10/07
+#
+#------------------------------------------------------------------------
+#  on considere: 6 phytos (exprime en C, Chl, N et P), 
+#                3 nuts (NO3,NH4,PO4), et de la MOD  (exprime en N et P)
+#-------------------------------------------------------------------------
+#
+# Consignes Generales IMPORTANTES: 
+# --------------------------------
+# 1/commencer tjrs une ligne vide ou de commentaires
+#    par un # sur le premier caractere de la ligne
+# 2/ ne rien ecrire sur une ligne de donnees apres celles-ci
+# 3/ separer les differentes variables qui apparaissent sur une
+#    meme ligne par un : sans laisser d'espace
+# 4/ les noms des compartiments sont imposes et a choisir parmi:
+#    zoo / phy / bac / det / mod / mid / mip
+#    EN RESPECTANT CET ORDRE
+# 5/ les noms des sous compartiments ne doivent pas contenir
+#    d'espaces et ne pas exceder 10 caracteres
+# 6/ Toutes les variables en chaine de caractere doivent etre ecrites 
+#    en miniscule,sauf les elements et molecules chimiques qui doivent
+#    etre ecrits classiquement comme suit: C,N,P,Si,Fe,Chl,NO3,NH4,O2,Zn...
+# 7/ si une des lignes de donnees depasse la valeur de L_CHAIN dans
+#    le fichier mod_fchain.f90, il faut augmenter L_CHAIN dans ce fichier
+#
+# -----------------------------------------------------------------------
+# Cas traite (ce n'est qu'un exemple)
+# ------------------------------------
+#  1 phyto(C,N,Chl), 1 nut: NO3  et un zoo(C,N)
+#  PPB limite par nut via quotats cellulaires : f_lim(f_Q)
+#  f_Q = (Q-Qmin)/(Qmax-Qmin)
+#  Modele de Geider 98 pour d(Chl)/dt 
+#  grazing = Modele de Beddington (1975)
+#
+# -------------- Introduction des variables -----------------------
+#
+# Suffixe caracterisant la simulation (chaine de 10 caracteres au max)
+delsen
+# Temps de la simulation (jour):pas de temps (sec):pas de tps de sauvegarde biogeochimie (mn)
+1:5000:2
+# dimensions spatiales (nx_min,nxmax,ny_min,ny_max,nz) si utilisation 0D mais
+# a remplir aussi en 3D meme si ces donnees viennent du code physique:
+1:1:1:1:10
+#
+# nom du fichier donnant l'irradiance ou le PAR:intervalle de temps (en mn) entre 2 donnees:irr2par:albedo:irr_param
+# ------------------------------------------------------------------------------------------------------------------
+# IMPORTANT: max 12 caracteres pour ce nom de fichier qui doit etre dans le repertoire DATA.
+# IMPORTANT: s'il s'agit d'irradiances nommer le fichier IRR_nom_a_choisir
+# s'il s'agit de valeurs de PAR (Photosynthesis Active Radiation) mettre la valeur de irr2par à 1
+#
+# sinon, si on veut generer l'intensite lumineuse a l'aide d'une fonction,
+# la syntaxe est la meme que précédemment sauf qu'il faut ecrire IRR_FONCTION a la place du nom du fichier 
+# et ajouter juste apres (apres le symbole :) la valeur en  W/m2 de l'irradiance incidente 
+# maximale (midi solaire)
+#
+# derniere possibilite: Eco3M est couple a un code physique qui fournit l'irradiance a la surface 
+# auquel cas ecrire IRR_CODEPHYS suivi des parametres irr2par:albedo:irr_param
+#
+#IRR_MES_STLOUIS:30:0.43:0.05:1.0
+IRR_FONCTION:420:30:0.43:0.05:1.0
+#IRR_CODEPHYS:0.43:0.05:1.0
+#
+#  fonction permettant de calculer le coefficient d'extinction lumineuse:
+f_extinc(0.0384>0.029)
+#
+#-- spécifique au mode couplé: 
+# numerotation maille sur la verticale: si nz_max = surface de l'eau ecrire
+# SURF sinon ecrire FOND, (en mode non couplé et 0D ne rien écrire, mais ne pas laisser de ligne vide)
+FOND
+#
+#
+######## DONNEES SPECIFIQUES AU MODELE BIOGEOCHIMIQUE:
+#
+# nb de compart.(classes), de sous compart., et de var. d''etat au total
+3:3:5 
+# nom du 1er compart. et nb de ss-compart. correspondts
+#
+phy:1				
+phyml:C:Chl:N
+#
+#
+mod:1
+NOD:N
+#
+mid:1
+NO3:N
+# -----------------------------------------------------------------
+#
+##########################
+# MATRICE DE FLUX : 
+# matrice diagonale representant les interactions entre variables d'etat
+#
+# Consignes importantes:
+# ---------------------
+# 1/ commencer par introduire le nb DE PROCESSUS CUMULES
+# 2/ ne remplir que la partie superieure droite de la matrice (sans diagonale):
+# ligne 1 : FLUX de var(1) vers var(2) a var(nbvar)
+# ligne 2 : FLUX de var(2) vers var(3) a var(nbvar)
+# etc...
+# a rentrer sous la forme ili;jcol:signe;proc(listeparam separes par des ">")
+# 3/ FINIR PAR l'instruction "finflux"
+# 4/ Si un FLUX comporte plusieurs processus, les separer par des ":"
+# 5/ Si aucun processus ne relie 2 variables, ne pas le citer
+#
+#-------------- Introduction des variables ------------------------
+# nb cumule de fonctions de processus utilises dans l'ensemble des  
+# cellules de la matrice :
+7
+# matrice FLUX:
+#
+# phyto N --> NOD
+3;4:+;mort(1d-7):-;hQP(3>1d-3>1.d-2):x;upt2(5>5d-4>1.7d-4):+;upt2(5>2.5d-4>3.40d-7):-1.204;hQP(3>1d-3>1.d-2):x;upt2(5>5d-4>1.7d-4)
+#
+# phyto N --> NO3
+3;5:-;upt2(5>5d-4>3.40d-7)
+#
+#
+finflux
+#------------------------------------------------------------------
+##########################
+# VECTEUR SELF: Ce vecteur contient les termes source ou puit  
+# supplementaires dont l'origine ou la destination ne fait pas 
+# partie des variables d'etat du modele
+#
+# Consignes importantes:
+# ---------------------
+# 1/ Meme principe que pour la matrice FLUX sauf que cette fois,
+#    le flux est positif s'il alimente var(i)
+# 2/ Si un FLUX comporte plusieurs processus, les separer par des ";"
+# 3/ Si le flux SELF(i) augment var(i), alors il doit etre positif
+# 4/ FINIR PAR l'instruction "finself"
+#
+#-------------- Introduction des variables ------------------------
+# nb cumule de processus utilises dans chaque cellule du vecteur 
+3
+# photosynthese et respiration autotrophe
+1:+;ppb(20.0>5.75d-7>2.50d-3>8.00>3.5d-8>2.6d-4):-0.397;upt2(5>2.5d-3>3.40d-6):-;mort(1d-7)
+#
+# synthese de chlorophylle :
+#
+finself
+#------------------------------------------------------------------
+#########################
+# Rapport  Chlorophylle/Carbone  en (g chl)/(mol C) 
+#(0 = rapport constant et donne apres les ':'
+# et 1 = rapport variable calcule par le prog. mais a initialiser) :
+#0:0.25
+1
+#
+# A Revoir en fonction du fait que ce rapport devrait varier 
+# avec les especes de phyto !!!! 
+#########################
+# Nombre de points où sauvegarder le détail des flux biogeochimiques 
+2
+# Coordonnées de ces points sous la forme i:j:k
+1:1:1 
+2:5:6
+#

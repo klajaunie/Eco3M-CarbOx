@@ -1,0 +1,151 @@
+#  MAKEFILE ECO3M - version Eco3M NON couplé
+#
+# CLES DE PRECOMPILATION à mettre dans CPPFLAGS:
+#------------------------------------------------
+# * CALC     : clé utilisée obligatoirement dans les fichiers Makefile.calc; correspond au mode calcul du modele
+# * COUPL    : utilisation en mode couplé avec un modele physique
+# * INI      : utilisée obligatoirement dans le fichier Makefile, pour lancer le mode d'initialisation qui permet de générer le modèle via la création du fichier call.inc
+# * M0D-NCOUPL : clé qui ne peut se mettre que si on est en mode NON couplé (NCOUPL) et en 0D
+# * M3D-NCOUPL : clé qui ne peut se mettre que si on est en mode NON couplé (NCOUPL) mais avec une geometrie 3D (ou 1D)
+# * NCOUPL   : utilisation en mode NON couplé
+# * MODTEST : en phase de test => affichages intermediaires
+# * RESBIO_A : sortie des resultats au format ASCII
+# * RESBIO_N : sortie des resultats au format NETCDF
+# * VAR_GLOB: pour l'utilisation de variables globales supplémentaires pour le modèle biogéochimique
+#
+#
+#Compilateur
+#FC            = ifort -check bounds
+ FC            = ifort
+#linker
+LINKER        = ifort  
+
+#preprocesseur
+CPP           = cpp -nostdinc
+#
+#FLAG de precompilation
+CPPFLAGS      = -FR -P -C -DCALC -DRESBIO_A -DNCOUPL -DM0D-NCOUPL -DMODTEST -DVEXPLICIT -I./BIO/INCLUDE/
+#CPPFLAGS      = -P -C -DCALC -DRESBIO_A -DNCOUPL -DM3D-NCOUPL -DMODTEST -DVEXPLICIT -I./BIO/INCLUDE/
+
+#Repertoires INCLUDE
+INCDIR        = -I./BIO/INCLUDE/ -I./BIO/MODULES/
+
+#FLAG de compilation
+COMP_OPTS     = ${INCDIR} ${MODDIR}
+#
+PROGRAM	      = ./eco3M.exe
+
+
+#LIBRAIRIES
+# pour cluster
+LIBS          =  ./BIO/LIB/libionetcdfPC.a \
+		./BIO/LIB/libnetcdf_351.a
+  
+#MODULES
+MODULS	      = ${SRC_BIO}mod_longchain.f90 \
+		${SRC_BIO}modules.f90 \
+		${SRC_BIO}mod_fchain.f90 \
+		${SRC_BIO}mod_process.f90 
+#
+#REPERTOIRES
+SRC_BIO           = ./BIO/
+SRC_BIO_CPP       = ./BIO/petitf/
+SRC_PHY           = ./PHY/
+SRC_PHY_CPP       = ./PHY/petitf/
+OBJ_BIO           = ./BIO/OBJETS/
+OBJ_PHY           = ./BIO/OBJETS/
+#-- pour ifort
+MODDIR        = -module ./BIO/MODULES/
+
+#
+OBJS          = ${OBJ_BIO}mod_longchain.o \
+		${OBJ_BIO}modules.o \
+		${OBJ_BIO}mod_fchain.o \
+		${OBJ_BIO}mod_process.o \
+		coupleur.o \
+      		${OBJ_BIO}main_bio.o \
+		${OBJ_BIO}sub_affiche.o \
+		${OBJ_BIO}sub_call_tab.o \
+		${OBJ_BIO}sub_calc_prelim.o \
+		${OBJ_BIO}sub_fin.o \
+		${OBJ_BIO}sub_init.o \
+		${OBJ_BIO}sub_init_mod.o \
+		${OBJ_BIO}sub_var_ini.o \
+      ${OBJ_BIO}sub_resbio_ascii.o
+#		${OBJ_BIO}sub_resbio_netcdf.o
+#
+#
+all:		 ${PROGRAM} 
+#
+# CREATION PROGRAMME - EDITIONS DES LIENS
+#
+modules:
+	${FC} ${COMP_OPTS} -c ${MODULS} ${MODDIR}
+	@echo "fin creation modules"
+#
+${PROGRAM}:	${OBJS}
+	@echo  "CREATION ${PROGRAM} ... "
+	${LINKER} ${INCDIR} ${LDFLAG} ${OBJS} ${LIBS}  -o  ${PROGRAM} 
+	@echo "COMPILATION - lIENS TERMINE"
+	${PROGRAM} 
+#	@echo "Mode CALC TERMINE"
+#
+clean:;		rm -f ${OBJ}* ${SRC_BIO_CPP}*  ${SRC_PHY_CPP} *./MODULES/* ${PROGRAM}
+#
+#
+# COMPILATION
+
+coupleur.o: coupleur.F90 	
+	${CPP}  ${CPPFLAGS} coupleur.F90 coupleur_calc.f90	
+	${FC}	${COMP_OPTS} -c coupleur_calc.f90 -o coupleur.o
+
+${OBJ_BIO}main_bio.o: ${SRC_BIO}main_bio.F90 
+	${CPP}  ${CPPFLAGS} ${SRC_BIO}main_bio.F90 ${SRC_BIO_CPP}main_bio.f90	
+	${FC}	${COMP_OPTS} -c ${SRC_BIO_CPP}main_bio.f90 -o ${OBJ_BIO}main_bio.o 
+
+${OBJ_BIO}mod_longchain.o: ${SRC_BIO}mod_longchain.f90 
+	${FC}	${COMP_OPTS} -c ${SRC_BIO}mod_longchain.f90 -o ${OBJ_BIO}mod_longchain.o
+# 
+${OBJ_BIO}mod_fchain.o: ${SRC_BIO}mod_fchain.f90 	
+	${FC}	${COMP_OPTS} -c ${SRC_BIO}mod_fchain.f90 -o ${OBJ_BIO}mod_fchain.o
+# 
+${OBJ_BIO}mod_process.o: ${SRC_BIO}mod_process.F90 	
+	${CPP}  ${CPPFLAGS} ${SRC_BIO}mod_process.F90 ${SRC_BIO_CPP}mod_process.f90	
+	${FC}	${COMP_OPTS} -c ${SRC_BIO_CPP}mod_process.f90 -o ${OBJ_BIO}mod_process.o
+# 
+${OBJ_BIO}modules.o: ${SRC_BIO}modules.F90 	
+	${CPP}  ${CPPFLAGS} ${SRC_BIO}modules.F90 ${SRC_BIO}modules.f90	
+	${FC}	${COMP_OPTS} -c ${SRC_BIO}modules.f90 -o ${OBJ_BIO}modules.o
+# 
+${OBJ_BIO}sub_affiche.o: ${SRC_BIO}sub_affiche.F90 	
+	${CPP}  ${CPPFLAGS} ${SRC_BIO}sub_affiche.F90 ${SRC_BIO_CPP}sub_affiche.f90	
+	${FC}	${COMP_OPTS} -c ${SRC_BIO_CPP}sub_affiche.f90 -o ${OBJ_BIO}sub_affiche.o
+# 
+${OBJ_BIO}sub_calc_prelim.o: ${SRC_BIO}sub_calc_prelim.F90 	
+	${CPP}  ${CPPFLAGS} ${SRC_BIO}sub_calc_prelim.F90 ${SRC_BIO_CPP}sub_calc_prelim.f90	
+	${FC}	${COMP_OPTS} -c ${SRC_BIO_CPP}sub_calc_prelim.f90 -o ${OBJ_BIO}sub_calc_prelim.o
+# 
+ ${OBJ_BIO}sub_call_tab.o: ${SRC_BIO}sub_call_tab.f90 	
+	${FC}	${COMP_OPTS} -c ${SRC_BIO}sub_call_tab.f90 -o ${OBJ_BIO}sub_call_tab.o
+# 
+${OBJ_BIO}sub_fin.o: ${SRC_BIO}sub_fin.f90 	
+	${FC}	${COMP_OPTS} -c ${SRC_BIO}sub_fin.f90 -o ${OBJ_BIO}sub_fin.o
+# 
+${OBJ_BIO}sub_init.o: ${SRC_BIO}sub_init.F90 	
+	${CPP}  ${CPPFLAGS} ${SRC_BIO}sub_init.F90 ${SRC_BIO_CPP}sub_init.f90	
+	${FC}	${COMP_OPTS} -c ${SRC_BIO_CPP}sub_init.f90 -o ${OBJ_BIO}sub_init.o
+# 
+${OBJ_BIO}sub_init_mod.o: ${SRC_BIO}sub_init_mod.f90 	
+	${FC}	${COMP_OPTS} -c ${SRC_BIO}sub_init_mod.f90 -o ${OBJ_BIO}sub_init_mod.o
+# 
+#${OBJ_BIO}sub_phys_ini.o: ${SRC_BIO}sub_phys_ini.f90 	
+#	${FC}	${COMP_OPTS} -c ${SRC_BIO}sub_phys_ini.f90 -o ${OBJ_BIO}sub_phys_ini.o
+# 
+${OBJ_BIO}sub_var_ini.o: ${SRC_BIO}sub_var_ini.F90 
+	${CPP}  ${CPPFLAGS} ${SRC_BIO}sub_var_ini.F90 ${SRC_BIO_CPP}sub_var_ini.f90	
+	${FC}	${COMP_OPTS} -c ${SRC_BIO_CPP}sub_var_ini.f90 -o ${OBJ_BIO}sub_var_ini.o
+#
+${OBJ_BIO}sub_resbio_ascii.o: ${SRC_BIO}sub_resbio_ascii.F90 
+	${CPP}  ${CPPFLAGS} ${SRC_BIO}sub_resbio_ascii.F90 ${SRC_BIO_CPP}sub_resbio_ascii.f90	
+	${FC}   ${COMP_OPTS} -c ${SRC_BIO_CPP}sub_resbio_ascii.f90 -o ${OBJ_BIO}sub_resbio_ascii.o
+

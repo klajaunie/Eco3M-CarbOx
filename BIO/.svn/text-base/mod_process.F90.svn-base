@@ -1,0 +1,163 @@
+!***************************************************************************
+!***************************************************************************
+!Copyright or © or Copr. CNRS/IRD/Université de la Méditerranée
+!contributor(s) : Melika BAKLOUTI & Vincent FAURE (10/10/2006)
+!
+!m.baklouti@univmed.fr; vincent.faure@univmed.fr
+!
+!This software (Eco3M) is a computer program whose purpose is to perform 
+!biogeochemical or coupled physical-biogeochemical modelling.
+!
+!This software is governed by the CeCILL license under French law and
+!abiding by the rules of distribution of free software. You can  use, 
+!modify and/ or redistribute the software under the terms of the CeCILL
+!license as circulated by CEA, CNRS and INRIA at the following URL
+!"http://www.cecill.info". 
+!
+!As a counterpart to the access to the source code and  rights to copy,
+!modify and redistribute granted by the license, users are provided only
+!with a limited warranty  and the software''s author,  the holder of the
+!economic rights,  and the successive licensors  have only  limited
+!liability. 
+!
+!In this respect, the user''s attention is drawn to the risks associated
+!with loading,  using,  modifying and/or developing or reproducing the
+!software by the user in light of its specific status of free software,
+!that may mean  that it is complicated to manipulate,  and  that  also
+!therefore means  that it is reserved for developers  and  experienced
+!professionals having in-depth computer knowledge. Users are therefore
+!encouraged to load and test the software''s suitability as regards their
+!requirements in conditions enabling the security of their systems and/or 
+!data to be ensured and,  more generally, to use and operate it in the 
+!same conditions as regards security. 
+!
+!The fact that you are presently reading this means that you have had
+!knowledge of the CeCILL license and that you accept its terms.
+!***************************************************************************
+!***************************************************************************
+!
+!---------------------------------------------------------------------------
+!
+                     MODULE F_PROCESS
+!
+!---------------------------------------------------------------------------
+!
+! Ce module sert a integrer toutes les fonctions modélisant
+! des processus que l''on désire intégrer dans le modèle
+!
+! Ce fichier est donc l''un des rares fichiers que l''utilisateur est
+! amené à modifier
+!
+! ATTENTION: il doit y figurer obligatoirement le nom de la fonction
+! calculant le coefficient d''extinction lumineuse
+!
+! Derniere modification: 06/07/07
+!-----------------------------------------------------------------
+ Use COUPLEUR_PHY_BIO
+ Use MOD_FCHAIN
+
+ CONTAINS
+
+!-----------------------------------------------------------------
+! --------- Modèles de Production primaire Brute (PPB) -----------
+!-----------------------------------------------------------------
+
+!-- Han (2002):
+include "../F_PROCESS/PPB/f_ppb_han.inc"
+!
+!---------------------------------------------------------------------------------------------
+!---- Fonctions de quota de limitation de la PPB ou de la PB (1 seul nutriment limitant)-----
+!---------------------------------------------------------------------------------------------
+
+!-- Caperon & Meyer (1972):
+include "../F_PROCESS/FQUOTA/f_fQPP_capmey.inc"
+!-- Droop (1968):
+include "../F_PROCESS/FQUOTA/f_fQPP_droop.inc"
+!-- Geider et al. (1998):
+include "../F_PROCESS/FQUOTA/f_fQPP_flynn.inc"
+!-- Flynn (2001):
+include "../F_PROCESS/FQUOTA/f_fQPP_geid.inc"
+
+!--------------------------------------------------------------------------------------------
+!---- Fonctions de quota de limitation de la PPB ou de la PB (2  nutriments limitants) ------
+!--------------------------------------------------------------------------------------------
+!
+!-- Caperon & Meyer (1972):
+include "../F_PROCESS/FQUOTA/MULTI_LIM/f_fQPP_capmey_min.inc"
+!-- Droop (1968):
+include "../F_PROCESS/FQUOTA/MULTI_LIM/f_fQPP_droop_min.inc"
+!-- Geider et al. (1998):
+include "../F_PROCESS/FQUOTA/MULTI_LIM/f_fQPP_flynn_min.inc"
+!-- Flynn (2001):
+include "../F_PROCESS/FQUOTA/MULTI_LIM/f_fQPP_geid_min.inc"
+!
+!
+!-----------------------------------------------------------------
+!---- Modèles de photoacclimatation (Chl:C variable)   -----------
+!-----------------------------------------------------------------
+!
+!-----------------------------------------------------------------
+!---- Modèles de vitesse de Production  bactérienne (PB)  --------
+!-----------------------------------------------------------------
+
+! upake de COD selon Monod-Michaelis-Menten: 
+!-----------------------------------------
+! utiliser les modeles d''uptake f_upt_monod*.inc fournis dans le 
+! repertoire ./F_PROCESS/UPT/
+
+!-----------------------------------------------------------------
+! --------- Modèles de Respiration -------------------------------
+!-----------------------------------------------------------------
+!
+!-----------------------------------------------------------------
+!-------   Modèles de rejets : excretion, exudation...  ----------
+!-----------------------------------------------------------------
+!
+!-----------------------------------------------------------------
+!---------- Modèles d''uptake -------------------------------------
+!-----------------------------------------------------------------
+!
+!-- Monod-Michaelis-Menten (Vmax en s-1)
+include "../F_PROCESS/UPT/f_upt_monod.inc"
+!-----------------------------------------------------------------------------------
+!---- Fonctions de quota de limitation de l''assimilation de nutriments (uptake) ----
+!-----------------------------------------------------------------------------------
+
+!-- Flynn (2003):
+include "../F_PROCESS/FQUOTA/f_fQupt_flynn.inc"
+!-- Geider et al. (1998):
+include "../F_PROCESS/FQUOTA/f_fQupt_geid.inc"
+!-- Lehman et al. (1975):
+include "../F_PROCESS/FQUOTA/f_fQupt_lehman.inc"
+!---------------------------------------------------------------------------
+! ----- Modèles de prédation (grazing): cas d''UNE SEULE proie par prédateur 
+!---------------------------------------------------------------------------
+
+!-----------------------------------------------------------------------------
+! ----- Modèles de prédation (grazing): cas de PLUSIEURS PROIES par prédateur 
+!-----------------------------------------------------------------------------
+!
+!-----------------------------------------------------------------
+! --------- Modèles de Mortalité            ----------------------
+!-----------------------------------------------------------------
+!
+!-- loi de mortalité linéaire:
+include "../F_PROCESS/MORT/f_mort_linear.inc"
+!-- loi de mortalité quadratique:
+include "../F_PROCESS/MORT/f_mort_quadratique.inc"
+!
+!-----------------------------------------------------------------
+! --------- Modèles de reminéralisation  -------------------------
+!-----------------------------------------------------------------
+!
+!-----------------------------------------------------------------
+!---- Modèle de retour du zooplancton: source de DET_C et DET_N --
+!-----------------------------------------------------------------
+!
+!-----------------------------------------------------------------
+!----- Modèles d''extinction lumineuse dans la colonen d''eau  ----
+!-----------------------------------------------------------------
+!
+include "../F_PROCESS/LIGHT/ATTENUATION/f_extinc_morel.inc"
+
+END MODULE F_PROCESS

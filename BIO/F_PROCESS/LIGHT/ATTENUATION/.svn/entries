@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="2"
+   name=""
+   committed-date="2007-09-05T11:35:54.012063Z"
+   url="http://svn.com.univ-mrs.fr/eco3m/BIO/F_PROCESS/LIGHT/ATTENUATION"
+   last-author="baklouti"
+   kind="dir"
+   uuid="88cb48c4-f3ad-4fee-9df6-4436bd6809b2"
+   revision="7"/>
+<entry
+   committed-rev="2"
+   name="f_extinc_morel.inc"
+   text-time="2007-09-20T15:53:31.000000Z"
+   committed-date="2007-09-05T11:35:54.012063Z"
+   checksum="9618215aeb2104807a340e91aafbc0e8"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-09-20T15:53:31.000000Z"/>
+<entry
+   committed-rev="2"
+   name="f_extinc_levy.inc"
+   text-time="2007-09-20T15:53:31.000000Z"
+   committed-date="2007-09-05T11:35:54.012063Z"
+   checksum="a5bc01d44ac219ca1c664bd05e4ad21f"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-09-20T15:53:31.000000Z"/>
+</wc-entries>

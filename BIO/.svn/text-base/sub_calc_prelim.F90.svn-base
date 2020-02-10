@@ -1,0 +1,366 @@
+!***************************************************************************
+!***************************************************************************
+!Copyright or © or Copr. CNRS/IRD/Université de la Méditerranée
+!contributor(s) : Melika BAKLOUTI & Vincent FAURE (10/10/2006)
+!
+!m.baklouti@univmed.fr; vincent.faure@univmed.fr
+!
+!This software (Eco3M) is a computer program whose purpose is to perform 
+!biogeochemical or coupled physical-biogeochemical modelling.
+!
+!This software is governed by the CeCILL license under French law and
+!abiding by the rules of distribution of free software. You can  use, 
+!modify and/ or redistribute the software under the terms of the CeCILL
+!license as circulated by CEA, CNRS and INRIA at the following URL
+!"http://www.cecill.info". 
+!
+!As a counterpart to the access to the source code and  rights to copy,
+!modify and redistribute granted by the license, users are provided only
+!with a limited warranty  and the software''s author,  the holder of the
+!economic rights,  and the successive licensors  have only  limited
+!liability. 
+!
+!In this respect, the user''s attention is drawn to the risks associated
+!with loading,  using,  modifying and/or developing or reproducing the
+!software by the user in light of its specific status of free software,
+!that may mean  that it is complicated to manipulate,  and  that  also
+!therefore means  that it is reserved for developers  and  experienced
+!professionals having in-depth computer knowledge. Users are therefore
+!encouraged to load and test the software''s suitability as regards their
+!requirements in conditions enabling the security of their systems and/or 
+!data to be ensured and,  more generally, to use and operate it in the 
+!same conditions as regards security. 
+!
+!The fact that you are presently reading this means that you have had
+!knowledge of the CeCILL license and that you accept its terms.
+!***************************************************************************
+!***************************************************************************
+!
+!----------------------------------------------------------------
+!
+                SUBROUTINE sub_lec_irrad
+!
+!-- Routine de lecture de l''irradiance dans le fichier fichirrad
+!
+! dernière modification: 27/06/07
+!----------------------------------------------------------------
+! lecture de l''irradiance dans le fichier ad hoc au temps considere
+! ou calcul de l''irradiance par une fonction. 
+! Une seule valeur de l''irradiance est fournie et affectee a tout le tableau irrad
+!
+Use COUPLEUR_PHY_BIO
+Use VAR_USER
+Use VAR_GLOBAL
+
+Implicit None
+
+!-- variables locales:
+ Integer :: i,j,errlec,lec_irrad
+ real(8),PARAMETER  :: pi=3.1415d0
+ Real(8) :: irradscal ! valeur scalaire de l''irradiance
+ Logical :: present
+ 
+
+!-- cas d'une irradiance ou d'un PAR fournis par un fichier:
+if (fichirrad /= 'IRR_FONCTION' .and. fichirrad /= 'IRR_CODEPHYS') Then
+
+!-- premier appel du module bio: 
+  if (nbcallbio == 0 ) then 
+! test d''existence du fichier d''irradiance
+     inquire (file=fichirrad_long,EXIST=present)
+     if ((.NOT. present) ) then
+      write(*,*) 'ATTENTION : fichier d irradiance',fichirrad_long,'non trouve'
+      write(*,*) 'Le programme va etre arrete'
+      stop
+     else 
+      open (20,FILE=fichirrad_long) 
+     endif
+  endif
+!   
+!-- Lecture de l''irradiance :
+   Read(20,*,iostat=errlec) irradscal
+   if (irradscal < 0.d0) irradscal = 0.d0
+   if (errlec /=0) then 
+     print *, 'pb de lecture du fichier IRRAD :', fichirrad
+     stop
+   endif
+!--cas d''une irradiance calculee par une fonction (qui peut etre changee si besoin)  
+elseif (fichirrad == 'IRR_FONCTION') then  
+   irradscal  = irrad_MAX *exp(3.7*(cos(2.0*pi*tps/24/3600.)-1))
+endif
+
+!-- l''irradiance fournie est un scalaire que l'on affecte a tout l'espace horizontal:
+  irrad = irradscal
+
+#ifdef MODTEST
+  Write(*,*) '---  sub_lec_irrad terminée '
+#endif
+End Subroutine sub_lec_irrad
+!----------------------------------------------------------------
+!
+!
+                Subroutine sub_calc_EPARZ
+!
+! subroutine de calcul de E_PAR(z) sur la colonne d''eau 
+! irrad est le rayonnement incident global (W/m2)
+! PAR0plus est la portion d''irrad comprise dans la fenetre 400-700 nm
+!
+! dernière modification: 27/06/07
+!----------------------------------------------------------------
+Use COUPLEUR_PHY_BIO
+Use VAR_GLOBAL
+Use VAR_USER
+Use MOD_FCHAIN
+Use F_PROCESS
+
+Implicit None
+
+
+!-- variables locales:
+ Integer    :: iphy_Chl(nscp_phy),iphy_C(nscp_phy)
+ Integer    :: i,j,k,nn
+ real(8)    :: Chl_tot
+ real(8)    :: kextinc
+ real(8)    :: dz
+ character(L_CHAIN) :: scomp,elmt
+ character(3) :: debfichirrad
+
+
+!-------------------------------------------------------------
+!-- Calcul de E_PAR(0+) sauf si irrad est deja un PAR
+!-------------------------------------------------------------
+ fichirrad = adjustl(fichirrad)
+ debfichirrad= fichirrad(1:3)
+ if (debfichirrad /= 'PAR') then 
+         E_PAR(:,:) = irr2par * irrad !integrale du spectre sur les longueurs d''onde utilisables
+ else
+         E_PAR(:,:) =  irrad    
+ endif	
+
+!-------------------------------------------------------
+!-- Calcul de E_PAR(0-) 
+!-------------------------------------------------------
+!-- Modele Général :  
+   E_PAR(:,:) = irr_param * (1-albedo) * E_PAR(:,:) 
+
+!-------------------------------------------------------
+!-- Calcul du terme d''extinction (sauf en 0D)
+!-------------------------------------------------------
+!  
+#ifndef M0D-NCOUPL
+! initialisation:
+iphy_C = 0
+iphy_Chl = 0
+!
+! Le calcul du coefficient d''extinction necessite de connaitre la biomasse chlorophylienne:
+!
+! 1/ determination des indices de variable contenant des conc en Chl:
+  ! 1/ cas ou la conc en Chl est calculee explicitement
+  if (CHL_C_BOOL) then
+      elmt= 'Chl'
+      iphy_Chl =  f_idorg2id_vect(iscp_phy,elmt,nscp_phy)
+      write(11,*) 
+      write(11,*) 'iphy_Chl =',iphy_Chl
+      write(11,*) 
+  else
+   ! 2/ cas ou la conc en Chl est calculee a partir du Carbone
+      elmt='C'
+      iphy_C   =  f_idorg2id_vect(iscp_phy,elmt,nscp_phy)
+  endif
+  
+!-- calcul de Chl_tot pour chaque maille:
+!----------------------------------------
+!- cas ou nz_max est à la surface:
+   if (pos_nzmax == 'SURF') then  
+!----------------------------------------
+    do i=nx_min,nx_max
+     do j=ny_min,ny_max
+      do k=1,nz_max
+! mise a zero de la Chl tot sur chaque maille
+         Chl_tot = 0.d0
+!--calcul de la conc totale en Chl a la maille i,j,k:
+      do nn=1,nscp_phy
+       if (CHL_C_BOOL .and. maxval(iphy_Chl) /=0) then
+         if (k /= nz_max) then
+           Chl_tot = Chl_tot + (VAR(iphy_Chl(nn))%conc(i,j,k) + VAR(iphy_Chl(nn))%conc(i,j,k+1))/2.d0
+	 else
+           Chl_tot = Chl_tot + VAR(iphy_Chl(nn))%conc(i,j,k) 
+	 endif
+       elseif(.NOT. (CHL_C_BOOL) .and. maxval(iphy_C) /=0) then
+         if (k /= nz_max) then
+	   Chl_tot = Chl_tot + (VAR(iphy_C(nn))%conc(i,j,k) + VAR(iphy_C(nn))%conc(i,j,k+1))/2.d0*CHL_C0
+	 else
+           Chl_tot = Chl_tot + VAR(iphy_Chl(nn))%conc(i,j,k) 
+	 endif	        
+      endif
+      enddo
+!--------------------------
+!---- Calcul de E_PAR(z) 
+!--------------------------
+       if (k==nz_max) then ! pres de la surface
+!-- Calcul de la distance entre deux noeuds 
+	  dz = prof(i,j) - alti_z(i,j,nz_max)
+       else
+          dz = alti_z(i,j,k+1) - alti_z(i,j,k) 
+       endif
+!-- lignes de code permettant de calculer le terme d''extinction kextinc
+!  (Chl_tot et dz y sont transmis par argument)
+!
+#ifdef CALC
+        include "calc_extinc.inc"
+#endif	
+	if (k== nz_max) then
+           if (size(E_PAR) == 1) then 
+             E_PARZ(i,j,k) = E_PAR(1,1) * kextinc
+           else
+             E_PARZ(i,j,k) = E_PAR(i,j) * kextinc
+           endif
+        else
+           E_PARZ(i,j,k) = E_PARZ(i,j,k+1) * kextinc
+	endif
+       enddo         
+      enddo
+     enddo
+!- cas ou nz_max est à la surface:
+!----------------------------------------
+     elseif (pos_nzmax == 'FOND') then   
+!----------------------------------------
+    do i=nx_min,nx_max
+     do j=ny_min,ny_max
+      do k=1,nz_max
+! mise a zero de la Chl tot sur chaque maille
+         Chl_tot = 0.d0
+!--calcul de la conc totale en Chl a la maille i,j,k:
+      do nn=1,nscp_phy
+       if (CHL_C_BOOL .and. maxval(iphy_Chl) /=0) then
+         if (k /= 1) then
+           Chl_tot = Chl_tot + (VAR(iphy_Chl(nn))%conc(i,j,k) + VAR(iphy_Chl(nn))%conc(i,j,k-1))/2.d0
+	 else
+           Chl_tot = Chl_tot + VAR(iphy_Chl(nn))%conc(i,j,k) 
+	 endif
+       elseif(.NOT. (CHL_C_BOOL) .and. maxval(iphy_C) /=0) then
+         if (k /= 1) then
+	   Chl_tot = Chl_tot + (VAR(iphy_C(nn))%conc(i,j,k) + VAR(iphy_C(nn))%conc(i,j,k-1))/2.d0*CHL_C0
+	 else
+           Chl_tot = Chl_tot + VAR(iphy_Chl(nn))%conc(i,j,k) 
+	 endif	        
+      endif
+      enddo
+      if (k==1) then 
+!-- Calcul de la distance entre deux noeuds 
+         dz = prof(i,j) - alti_z(i,j,1)
+      else 
+         dz = alti_z(i,j,k-1) - alti_z(i,j,k) 
+      endif
+!-- lignes de code permettant de calculer le terme d''extinction kextinc
+!  (Chl_tot et dz y sont transmis par argument)
+#ifdef CALC
+       include "calc_extinc.inc"
+#endif
+	if (k==1) then
+           if (size(E_PAR) == 1) then 
+             E_PARZ(i,j,k) = E_PAR(1,1) * kextinc
+           else
+             E_PARZ(i,j,k) = E_PAR(i,j) * kextinc
+           endif
+        else
+	   E_PARZ(i,j,k) = E_PARZ(i,j,k-1) * kextinc  
+	endif
+
+        enddo         
+       enddo
+     enddo
+    endif
+#else
+  do k=1,nz_max
+   E_PARZ(:,:,k) = E_PAR(:,:)
+  enddo
+#endif
+!
+#ifdef MODTEST
+  Write(*,*) '---  sub_calc_EPARZ terminée '
+#endif
+!!-- Expressions à transformer en fonctions (très prochainement):
+!
+! expression David Antoine (1998) sauf le 0.026 qui est une moyenne des valeurs de a*:
+!      kk = kk0 + 0.032 * (Chl_tot*1.d3)**0.8  !-- relation pour Chl en mg m-3
+!
+! A VOIR (morel ???):
+! kk = kk0 + 0.0088 * Chl_tot*1.d3  + 0.054 * (Chl_tot*1.d3)**(2./3))
+
+End Subroutine sub_calc_EPARZ
+!----------------------------------------------------------------
+!
+                   SUBROUTINE sub_calc_Chl_C
+!
+!-- Calcul du rapport Chl:C (à partir des concentrations au 
+!   pas de tps precedent)
+!  Faire de cette subroutine une fonction plutôt
+!
+!-- dernière modification: 27/06/07
+!----------------------------------------------------------------
+!
+! parmi les variables d''etat, on recherche le phyto:
+! pour chaque classe de phyto, on cherche les conc. en C et en Chl:
+
+Use DEF_TYPE
+Use COUPLEUR_PHY_BIO
+Use VAR_GLOBAL
+Use MOD_FCHAIN
+
+Implicit None
+
+!-- variables globales:
+ Character(L_VAR) :: chaine,chaine2
+ integer :: i, ichl, ic ,iorg
+
+if (Allocated (CHL_C)) then  
+  ic = 0
+  ichl = 0
+
+  do i = 1,nscp_phy 
+      iorg = CHL_C(i)%idorg
+      chaine = 'C'
+      ic = f_idorg2id(iorg,chaine)
+      chaine2 = 'Chl'
+      ichl = f_idorg2id(iorg,chaine2)
+      CHL_C(i)%val(:,:,:) = var(ichl)%conc(:,:,:)/(var(ic)%conc(:,:,:) + 1.d-15)
+  enddo
+endif
+
+#ifdef MODTEST
+  write(*,*) 'sub_calc_Chl_C terminée'
+#endif
+  
+End Subroutine sub_calc_Chl_C
+!
+!----------------------------------------------------------------
+!
+                SUBROUTINE sub_calc_mu_phy
+		
+!
+!-- Calcul de la vitesse de croissance (s^-1)
+!   pour chaque phytoplancton 
+!
+!-- dernière modification: 27/06/07
+!----------------------------------------------------------------
+!
+ Use COUPLEUR_PHY_BIO
+ Use VAR_GLOBAL
+ Use MOD_FCHAIN
+
+ Implicit None
+
+!-- variables globales:
+ Character(L_VAR) :: chaine
+ integer :: i, ic,  iorg
+ 
+ 
+ do i = 1,nscp_phy
+     iorg = mu_phy(i)%idorg 
+     chaine = 'C'
+     ic = f_idorg2id(iorg,chaine)
+     mu_phy(i)%val(:,:,:) = SELF_VAL(ic)%val / (var(ic)%conc + 1.d-15)
+ enddo
+End Subroutine sub_calc_mu_phy
+!----------------------------------------------------------------

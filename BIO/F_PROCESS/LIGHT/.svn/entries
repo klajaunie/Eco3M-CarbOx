@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="2"
+   name=""
+   committed-date="2007-09-05T11:35:54.012063Z"
+   url="http://svn.com.univ-mrs.fr/eco3m/BIO/F_PROCESS/LIGHT"
+   last-author="baklouti"
+   kind="dir"
+   uuid="88cb48c4-f3ad-4fee-9df6-4436bd6809b2"
+   revision="7"/>
+<entry
+   name="GENER"
+   kind="dir"/>
+<entry
+   name="ATTENUATION"
+   kind="dir"/>
+</wc-entries>

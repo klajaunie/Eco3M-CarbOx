@@ -1,0 +1,58 @@
+c ***************************************************************
+c ***************************************************************
+c * fichier include pour les sorties de modele en netcdf        *
+c *								*
+c * auteur         :    jfleroux                                *
+c * org            :    IFREMER                                 *
+c * date creation  :    11/01/02                                *
+c * derniere modif :    11/01/02 par jfleroux                   *
+c *-------------------------------------------------------------*
+c * Modifications :     					*
+c *								*
+c ***************************************************************
+c ***************************************************************
+
+        implicit none
+	
+	real*4		ionc_valmanque
+	parameter 	(ionc_valmanque=1.e+37)
+	integer 	ionc_longtabfich
+	parameter 	(ionc_longtabfich=1000)
+	integer 	ionc_longnomfich
+	parameter 	(ionc_longnomfich=200)
+	character*(*)	ionc_originet
+	parameter 	(ionc_originet='01-JAN-0000 00:00:00')
+	character*(*)	ionc_longnamet
+	parameter 	(ionc_longnamet=
+     1                   'Secondes depuis la date origine')
+	character*(*)	ionc_unitst
+	parameter 	(ionc_unitst='seconds')
+
+	integer 	ionc_limi,ionc_lima,ionc_pasi
+	integer 	ionc_ljmi,ionc_ljma,ionc_pasj
+	integer 	ionc_lkmi,ionc_lkma,ionc_pask
+	integer 	ionc_nfich
+	character*(ionc_longnomfich) ionc_nomfich(ionc_longtabfich)
+	character*(30)  ionc_rout
+	integer		ionc_idfich(ionc_longtabfich)
+	common /ionc_var/ ionc_nomfich,ionc_idfich,ionc_nfich,ionc_rout
+	common /ionc_mod/ ionc_limi,ionc_lima,ionc_ljmi,ionc_ljma
+        common /ionc_mod/ ionc_lkmi,ionc_lkma,ionc_pasi
+        common /ionc_mod/ ionc_pasj,ionc_pask
+
+!
+! codes d'erreur:
+!
+      integer ionc_errcreation
+      integer ionc_errfich
+      integer ionc_err_i
+      integer ionc_err_j
+      integer ionc_err_k
+      integer ionc_err_t
+
+      parameter (ionc_errcreation = -1000)
+      parameter (ionc_errfich     = -1001)
+      parameter (ionc_err_i       = -1002)
+      parameter (ionc_err_j       = -1003)
+      parameter (ionc_err_k       = -1004)
+      parameter (ionc_err_t       = -1005)

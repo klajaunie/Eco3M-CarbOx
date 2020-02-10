@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="7"
+   name=""
+   committed-date="2007-10-09T10:59:02.900021Z"
+   url="http://svn.com.univ-mrs.fr/eco3m/BIO"
+   last-author="baklouti"
+   kind="dir"
+   uuid="88cb48c4-f3ad-4fee-9df6-4436bd6809b2"
+   revision="7"/>
+<entry
+   committed-rev="7"
+   name="sub_calc_prelim.F90"
+   text-time="2007-10-09T13:33:29.000000Z"
+   committed-date="2007-10-09T10:59:02.900021Z"
+   checksum="f27416a1809e31068ee71a574335d473"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-10-09T13:33:29.000000Z"/>
+<entry
+   committed-rev="7"
+   name="sub_fin.f90"
+   text-time="2007-10-09T13:33:29.000000Z"
+   committed-date="2007-10-09T10:59:02.900021Z"
+   checksum="2c6455398596b8b082746c78579ae543"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-10-09T13:33:29.000000Z"/>
+<entry
+   name="F_PROCESS"
+   kind="dir"/>
+<entry
+   name="INCLUDE"
+   kind="dir"/>
+<entry
+   committed-rev="1"
+   name="mod_fchain.f90"
+   text-time="2007-07-04T13:51:34.000000Z"
+   committed-date="2007-06-29T15:31:59.978650Z"
+   checksum="e733b7fada1277fca22be667d2e73b56"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-07-04T13:51:34.000000Z"/>
+<entry
+   name="OBJETS"
+   kind="dir"/>
+<entry
+   name="SORTIES"
+   kind="dir"/>
+<entry
+   committed-rev="4"
+   name="sub_affiche.F90"
+   text-time="2007-09-20T15:53:31.000000Z"
+   committed-date="2007-09-07T11:57:32.641617Z"
+   checksum="0efed3e5b8a7d96283461ecfc0b928d6"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-09-20T15:53:31.000000Z"/>
+<entry
+   name="petitf"
+   kind="dir"/>
+<entry
+   committed-rev="7"
+   name="sub_var_ini.F90"
+   text-time="2007-10-09T13:33:38.000000Z"
+   committed-date="2007-10-09T10:59:02.900021Z"
+   checksum="262e6c710d8fceb563c7010adb08dbea"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-10-09T13:33:38.000000Z"/>
+<entry
+   name="FICH_CONFIG"
+   kind="dir"/>
+<entry
+   committed-rev="1"
+   name="mod_longchain.f90"
+   text-time="2007-07-04T13:51:37.000000Z"
+   committed-date="2007-06-29T15:31:59.978650Z"
+   checksum="92cd1b9907bd9de929d98c7c13184dff"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-07-04T13:51:37.000000Z"/>
+<entry
+   committed-rev="7"
+   name="sub_resbio_ascii.F90"
+   text-time="2007-10-09T13:33:38.000000Z"
+   committed-date="2007-10-09T10:59:02.900021Z"
+   checksum="bffaca014f3758bb6fdf58fc87bcdffe"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-10-09T13:33:38.000000Z"/>
+<entry
+   name="DOC"
+   kind="dir"/>
+<entry
+   committed-rev="7"
+   name="modules.F90"
+   text-time="2007-07-04T13:51:37.000000Z"
+   committed-date="2007-10-09T10:59:02.900021Z"
+   checksum="be61ec5711b86217595ef5b3dd2ea8db"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-10-09T13:33:38.000000Z"/>
+<entry
+   name="LIB"
+   kind="dir"/>
+<entry
+   committed-rev="7"
+   name="modele.def_demo"
+   text-time="2007-10-09T13:33:39.000000Z"
+   committed-date="2007-10-09T10:59:02.900021Z"
+   checksum="43c6ba78707bc64308590ec1545d4668"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-10-09T13:33:39.000000Z"/>
+<entry
+   committed-rev="7"
+   name="sub_call_tab.f90"
+   text-time="2007-10-09T13:33:40.000000Z"
+   committed-date="2007-10-09T10:59:02.900021Z"
+   checksum="60ef2a66c73c956b4fe1d3a06e7fe5a1"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-10-09T13:33:39.000000Z"/>
+<entry
+   name="MODULES"
+   kind="dir"/>
+<entry
+   committed-rev="7"
+   name="sub_init_mod.f90"
+   text-time="2007-10-09T13:33:40.000000Z"
+   committed-date="2007-10-09T10:59:02.900021Z"
+   checksum="900645e598d19d6e8db63041bb557104"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-10-09T13:33:40.000000Z"/>
+<entry
+   name="DATA"
+   kind="dir"/>
+<entry
+   committed-rev="7"
+   name="sub_init.F90"
+   text-time="2007-07-04T13:51:40.000000Z"
+   committed-date="2007-10-09T10:59:02.900021Z"
+   checksum="c32a7ddabecab27e3c57caecacbb8819"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-10-09T13:33:40.000000Z"/>
+<entry
+   committed-rev="7"
+   name="main_bio.F90"
+   text-time="2007-07-04T13:51:40.000000Z"
+   committed-date="2007-10-09T10:59:02.900021Z"
+   checksum="09ab1022e4384bdd42c0e2b3319ca32a"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-10-09T13:37:35.000000Z"/>
+<entry
+   committed-rev="7"
+   name="config.ini_0D_demo"
+   text-time="2007-10-09T13:37:35.000000Z"
+   committed-date="2007-10-09T10:59:02.900021Z"
+   checksum="bc81ec029e672c2f0ce5fafabe0c08c5"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-10-09T13:37:35.000000Z"/>
+<entry
+   committed-rev="7"
+   name="mod_process.F90"
+   text-time="2007-10-09T13:37:35.000000Z"
+   committed-date="2007-10-09T10:59:02.900021Z"
+   checksum="6fa5ec9fa6534d1cf51d8557f2327837"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-10-09T13:37:35.000000Z"/>
+<entry
+   committed-rev="1"
+   name="sub_resbio_netcdf.f90"
+   text-time="2007-07-04T13:51:40.000000Z"
+   committed-date="2007-06-29T15:31:59.978650Z"
+   checksum="24a5577c89f6eb91956fbac4de9401aa"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-07-04T13:51:40.000000Z"/>
+<entry
+   committed-rev="7"
+   name="config.ini_3D_demo"
+   text-time="2007-10-09T13:37:35.000000Z"
+   committed-date="2007-10-09T10:59:02.900021Z"
+   checksum="006e8e26f89db9131ac3518e26bc5290"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-10-09T13:37:35.000000Z"/>
+</wc-entries>

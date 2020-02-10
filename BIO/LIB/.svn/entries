@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="1"
+   name=""
+   committed-date="2007-06-29T15:31:59.978650Z"
+   url="http://svn.com.univ-mrs.fr/eco3m/BIO/LIB"
+   last-author="baklouti"
+   kind="dir"
+   uuid="88cb48c4-f3ad-4fee-9df6-4436bd6809b2"
+   revision="7"/>
+<entry
+   committed-rev="1"
+   name="libimf.a"
+   text-time="2007-07-04T13:51:39.000000Z"
+   committed-date="2007-06-29T15:31:59.978650Z"
+   checksum="4e864de30ef1f40cb5d148d7205ad3cb"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-07-04T13:51:39.000000Z"/>
+<entry
+   committed-rev="1"
+   name="libionetcdf.a"
+   text-time="2007-07-04T13:51:39.000000Z"
+   committed-date="2007-06-29T15:31:59.978650Z"
+   checksum="dbd2521c5d3d3b8e5caa2d41af091f64"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-07-04T13:51:39.000000Z"/>
+<entry
+   committed-rev="1"
+   name="libnetcdf_351.a"
+   text-time="2007-07-04T13:51:39.000000Z"
+   committed-date="2007-06-29T15:31:59.978650Z"
+   checksum="256a8820f7c36c32559eec7ce83a4c98"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-07-04T13:51:39.000000Z"/>
+<entry
+   committed-rev="1"
+   name="libionetcdfPC.a"
+   text-time="2007-07-04T13:51:39.000000Z"
+   committed-date="2007-06-29T15:31:59.978650Z"
+   checksum="7807f8e620756f93944e37290a65d34b"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-07-04T13:51:39.000000Z"/>
+<entry
+   committed-rev="1"
+   name="libnetcdf_melika.a"
+   text-time="2007-07-04T13:51:39.000000Z"
+   committed-date="2007-06-29T15:31:59.978650Z"
+   checksum="10e78f364e8473c6d142b7c728215a52"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-07-04T13:51:39.000000Z"/>
+</wc-entries>

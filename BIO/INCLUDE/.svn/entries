@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="1"
+   name=""
+   committed-date="2007-06-29T15:31:59.978650Z"
+   url="http://svn.com.univ-mrs.fr/eco3m/BIO/INCLUDE"
+   last-author="baklouti"
+   kind="dir"
+   uuid="88cb48c4-f3ad-4fee-9df6-4436bd6809b2"
+   revision="7"/>
+<entry
+   committed-rev="1"
+   name="ionc.inc_06062002"
+   text-time="2007-07-04T13:51:26.000000Z"
+   committed-date="2007-06-29T15:31:59.978650Z"
+   checksum="938513cdf27f85e1145b5af46b0c2ab8"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-07-04T13:51:26.000000Z"/>
+<entry
+   committed-rev="1"
+   name="ionc.inc"
+   text-time="2007-07-04T13:51:26.000000Z"
+   committed-date="2007-06-29T15:31:59.978650Z"
+   checksum="07005f9a3974eee4802bef875fdd9a3d"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-07-04T13:51:26.000000Z"/>
+<entry
+   committed-rev="1"
+   name="NETCDF.mod"
+   text-time="2007-07-04T13:51:26.000000Z"
+   committed-date="2007-06-29T15:31:59.978650Z"
+   checksum="d34a37999e5131f944665fe146faf22d"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-07-04T13:51:26.000000Z"/>
+<entry
+   committed-rev="1"
+   name="netcdf.hh"
+   text-time="2007-07-04T13:51:26.000000Z"
+   committed-date="2007-06-29T15:31:59.978650Z"
+   checksum="3620599054a175c4510d4ab5e05efb76"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-07-04T13:51:26.000000Z"/>
+<entry
+   committed-rev="1"
+   name="io_netcdf.inc"
+   text-time="2007-07-04T13:51:26.000000Z"
+   committed-date="2007-06-29T15:31:59.978650Z"
+   checksum="e2a77308e0b5fc3ffaf515c7383ad3c9"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-07-04T13:51:26.000000Z"/>
+<entry
+   committed-rev="1"
+   name="ncvalues.h"
+   text-time="2007-07-04T13:51:26.000000Z"
+   committed-date="2007-06-29T15:31:59.978650Z"
+   checksum="dd6699ea8bfc90f9f316efcbb3a110d9"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-07-04T13:51:26.000000Z"/>
+<entry
+   committed-rev="1"
+   name="netcdf.h"
+   text-time="2007-07-04T13:51:26.000000Z"
+   committed-date="2007-06-29T15:31:59.978650Z"
+   checksum="398b188bbc70e69a1a41ff78da14d9de"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-07-04T13:51:26.000000Z"/>
+<entry
+   committed-rev="1"
+   name="netcdf.inc"
+   text-time="2007-07-04T13:51:26.000000Z"
+   committed-date="2007-06-29T15:31:59.978650Z"
+   checksum="d12e0fb6b250cf27e4e2127e374fdb4a"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-07-04T13:51:26.000000Z"/>
+<entry
+   committed-rev="1"
+   name="netcdfcpp.h"
+   text-time="2007-07-04T13:51:26.000000Z"
+   committed-date="2007-06-29T15:31:59.978650Z"
+   checksum="d0e9f8e3c3d8056a88a35256b905e64d"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-07-04T13:51:26.000000Z"/>
+<entry
+   committed-rev="1"
+   name="TYPESIZES.mod"
+   text-time="2007-07-04T13:51:26.000000Z"
+   committed-date="2007-06-29T15:31:59.978650Z"
+   checksum="11ebc4d581f329cd5dd3cb670b9fcc97"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-07-04T13:51:26.000000Z"/>
+<entry
+   committed-rev="1"
+   name="ionc_f90.inc"
+   text-time="2007-07-04T13:51:26.000000Z"
+   committed-date="2007-06-29T15:31:59.978650Z"
+   checksum="07005f9a3974eee4802bef875fdd9a3d"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-07-04T13:51:26.000000Z"/>
+</wc-entries>

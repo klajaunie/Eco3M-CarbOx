@@ -1,0 +1,86 @@
+#------------------------------------------------------------------------------
+# Fichier de configuration du modèle
+#
+#     il s'y trouve l'ensemble des processus répertoriés dans 
+#     le modèle (sans ordre défini)et décrits sous la forme :
+#     num_processus:nom:nom_fonction:nb_param:valeurs des paramètres entre ':' 
+# 
+# ATTENTION: 
+#    * si une des lignes de donnees depasse la valeur de L_CHAIN 
+#      définie dans le fichier mod_fchain.f90, il faut augmenter 
+#      L_CHAIN dans le fichier en question
+#    * ne pas oublier de mettre un retout charriot apres la ligne
+#      du dernier processus
+#-----------------------------------------------------------------
+#
+# Liste des processus (et parametres associes) disponibles dans la 
+#  bibliotheque du modèle:
+#
+#--------- Modèles de PRODUCTION PRIMAIRE BRUTE ------------------
+#modèle de Geider (1998)
+gppg:f_ppb_geider:11:mumaxa:tref:tlet:b:Qmin:Qmax:Qpmin:Qpmax:Qminchl:Qmaxchl:alpha
+# fonction de limitation par la temperature
+limtemp_ppb:f_limtemp_ppb:4:temp:tref:tlet:b
+#
+#
+#--------- Modèles de fonctions de quotat ----------------------------
+#
+#--------- Modèles de PHOTOACCLIMATATION (Chl:C variable) -----------  
+#
+#--------- Modèles de RESPIRATION --------------------------------
+#
+# modèle de Bender (1999)
+resp:f_resp:1:r
+#Respiration bactérienne
+resp_bac:f_resp_bac:9:mumax:qcmin:qnmin:qpmin:QTEN:Trem:var1:var2:var3
+#
+#--------- Modèles de REJETS : excretion, exudation... -----------
+#
+# modèle d exudation (Bender, 1999):
+exud:f_out:0
+#fraction non assimilée par le zoo
+out_det:f_out_det:12:D:g1:g2:mumax:qcmin:qnmin:qpmin:QTEN:Trem:var1:var2:var3
+out_dets:f_out_dets:4:F:g1:g2:choix
+#pelotes fécales du zoo
+p_zoo:f_p_zoo:13:D:KZO:g1:g2:mumax:qcmin:qnmin:qpmin:QTEN:Trem:var1:var2:var3
+#excretion de MD par le zoo
+out_modn:f_out_mod:14:D:R:KZO:g1:g2:mumax:qcmin:qnmin:qpmin:QTEN:Trem:var1:var2:var3
+#
+#--------- Modèles d UPTAKE --------------------------------------
+#
+uptv:f_upt_droop:5:Qmax:Qmin:coeff_up:up_part:ks
+uptbactd:f_upt_bact_droop:4:upmax:ks:QTEN:Trem
+#
+#--------- Modèles de GRAZING  -----------------------------------
+#
+# fonction de Grazing (Holling II):
+gra:f_gra_phy:2:g1:g2
+# broutage des bactéries
+grac:f_gra_bact:9:mumax:qcmin:qnmin:qpmin:QTEN:Trem:var1:var2:var3
+# broutage des détritus
+gra_det:f_gra_det:2:g1:g2
+# fonction de limitation par la temperature
+limtemp_graz:f_limtemp_graz:0
+#
+#--------- Modèles de MORTALITE NATURELLE  -----------------------
+#
+#-------- Production Bactérienne ---------------------------
+#
+#pb:f_pbact:2:mumaxb:KbC
+#
+#-------- Modeles de coefficient d''extinction lumineuse ----------
+f_extinc:f_extinc_morel:2:kk0:aa0
+f_lum:f_lum:2:kk0:aa0
+#
+#-------- Modeles de nitrification ----------
+nit:f_nit:4:nitmax0:kq10:Tnit:KO2
+#-------- Modeles de production d O2 par photosynthèse----------
+prodO2:f_prodO2:0
+#---------- Modele de remineralisation-------------------------
+remin:f_remin:8:upmax1:upmax2:ks1:ks2:QTEN:Trem:qmin:qmax
+#
+#---------Modele d aeration-----------
+aera:f_aera:1:kw
+precipcarbo:f_precipcarbo:2:kprecip:Kc
+disscarbo:f_disscarbo:1:kcarb
+!fin

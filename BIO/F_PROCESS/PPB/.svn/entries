@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="7"
+   name=""
+   committed-date="2007-10-09T10:59:02.900021Z"
+   url="http://svn.com.univ-mrs.fr/eco3m/BIO/F_PROCESS/PPB"
+   last-author="baklouti"
+   kind="dir"
+   uuid="88cb48c4-f3ad-4fee-9df6-4436bd6809b2"
+   revision="7"/>
+<entry
+   committed-rev="7"
+   name="f_ppb_han.inc"
+   text-time="2007-10-09T13:33:36.000000Z"
+   committed-date="2007-10-09T10:59:02.900021Z"
+   checksum="58462933cc3b6ef3b3240a97401362b6"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-10-09T13:33:36.000000Z"/>
+</wc-entries>

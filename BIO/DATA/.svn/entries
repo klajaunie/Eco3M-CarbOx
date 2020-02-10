@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="1"
+   name=""
+   committed-date="2007-06-29T15:31:59.978650Z"
+   url="http://svn.com.univ-mrs.fr/eco3m/BIO/DATA"
+   last-author="baklouti"
+   kind="dir"
+   uuid="88cb48c4-f3ad-4fee-9df6-4436bd6809b2"
+   revision="7"/>
+<entry
+   committed-rev="1"
+   name="IRR_CST_350"
+   text-time="2007-07-04T13:51:40.000000Z"
+   committed-date="2007-06-29T15:31:59.978650Z"
+   checksum="b6b01f8f86a0823c78993c957e956e91"
+   last-author="baklouti"
+   kind="file"
+   prop-time="2007-07-04T13:51:40.000000Z"/>
+</wc-entries>

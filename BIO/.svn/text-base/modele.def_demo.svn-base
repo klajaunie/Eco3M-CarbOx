@@ -1,0 +1,102 @@
+#-----------------------------------------------------------------
+# Fichier de configuration du modèle pour être utilisé par Eco3M
+#-----------------------------------------------------------------
+#
+#     il s'y trouve l'ensemble des processus répertoriés dans 
+#     le modèle (sans ordre défini)et décrits sous la forme :
+#     num_processus:nom:nom_fonction:nb_param:valeurs des paramètres entre ':' 
+# 
+# ATTENTION: 
+#    * si une des lignes de donnees depasse la valeur de L_CHAIN 
+#      définie dans le fichier mod_fchain.f90, il faut augmenter 
+#      L_CHAIN dans le fichier en question
+#    * ne pas oublier de mettre un retout charriot apres la ligne
+#      du dernier processus
+#    * HORMIS EN MODE 0D NON COUPLE, IL FAUT TOUJOURS FOURNIR 
+#      UN MODELE D'EXTINCTION LUMINEUSE DANS LA COLONNE D'EAU 
+#    * NE PAS OUBLIER DE TERMINER LE FICHIER DE PROCESSUS PAR
+#      LA LIGNE !fin
+#-----------------------------------------------------------------
+#
+# Liste des processus (et parametres associes) disponibles dans la 
+#  bibliotheque du modèle:
+#
+#-----------------------------------------------------------------
+#--------- Modèles de PRODUCTION PRIMAIRE BRUTE ------------------
+#-----------------------------------------------------------------
+#
+# Han (2002):
+ppb:f_ppb_han:6:a_chl:phi_max_C:tau:sig_ps2:k_d:k_r 
+#
+#-----------------------------------------------------------------
+#--------- Modèles de fonctions de quotat ------------------------
+#-----------------------------------------------------------------
+#
+#
+# Fonctions de quotats qui s annulent a Qmin (fQPP)
+#---------------------------------------------------
+#
+# Droop (1968)
+fQP:f_fQPP_droop:2:indX:Qmin
+#
+# Fonctions de quotats qui s annulent a Qmax (fQupt)
+#---------------------------------------------------
+#
+# Geider (1998)
+hQP:f_fQupt_geid:4:indX:Qmin:Qmax:n
+#
+# plusieurs nutriments limitants (minimum des fonctions de quota) :
+#------------------------------------------------------------------
+#
+#-----------------------------------------------------------------
+#--------- Modèles de PHOTOACCLIMATATION (Chl:C variable) --------  
+#-----------------------------------------------------------------
+#
+#-----------------------------------------------------------------
+#--------- Modèles de RESPIRATION --------------------------------
+#-----------------------------------------------------------------
+#
+#
+#-----------------------------------------------------------------
+#--------- Modèles de REJETS : excretion, exudation... -----------
+#-----------------------------------------------------------------
+#
+#
+#-----------------------------------------------------------------
+#--------- Modèles d UPTAKE --------------------------------------
+#-----------------------------------------------------------------
+#
+# Modèle de Monod :
+upt2:f_upt_monod:3:inut:k_demi:vmax
+#
+#-----------------------------------------------------------------
+#--------- Modèles de GRAZING  -----------------------------------
+#-----------------------------------------------------------------
+#
+#
+#-----------------------------------------------------------------
+#--------- Modèles de MORTALITE NATURELLE  -----------------------
+#-----------------------------------------------------------------
+#
+# mortalite (cinetique du 2nd ordre) :
+#mort:f_mort_quadratique:1:kmort 
+#
+# mortalite (cinetique du 1er ordre) pour les bacteries:
+mort:f_mort_linear:1:kmort 
+#
+#-----------------------------------------------------------------
+#-------------- Production Bactérienne ---------------------------
+#-----------------------------------------------------------------
+#
+#
+#-----------------------------------------------------------------
+#-------- Modeles de coefficient d''extinction lumineuse ---------
+#-----------------------------------------------------------------
+#
+f_extinc:f_extinc_morel:2:kk0:aa0
+#
+#-----------------------------------------------------------------
+#---------------        Fin du fichier      ----------------------
+!fin
+#-----------------------------------------------------------------
+

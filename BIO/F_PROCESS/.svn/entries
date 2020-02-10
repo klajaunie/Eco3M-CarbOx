@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="7"
+   name=""
+   committed-date="2007-10-09T10:59:02.900021Z"
+   url="http://svn.com.univ-mrs.fr/eco3m/BIO/F_PROCESS"
+   last-author="baklouti"
+   kind="dir"
+   uuid="88cb48c4-f3ad-4fee-9df6-4436bd6809b2"
+   revision="7"/>
+<entry
+   name="FQUOTA"
+   kind="dir"/>
+<entry
+   name="MORT"
+   kind="dir"/>
+<entry
+   name="PPB"
+   kind="dir"/>
+<entry
+   name="PERTES"
+   kind="dir"/>
+<entry
+   name="GRAZ"
+   kind="dir"/>
+<entry
+   name="PChl"
+   kind="dir"/>
+<entry
+   name="LIGHT"
+   kind="dir"/>
+<entry
+   name="UPT"
+   kind="dir"/>
+<entry
+   name="PBACT"
+   kind="dir"/>
+<entry
+   name="RESP"
+   kind="dir"/>
+<entry
+   name="REMIN"
+   kind="dir"/>
+</wc-entries>

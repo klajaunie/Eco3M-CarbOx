@@ -1,0 +1,268 @@
+# Fichier de configuration AVEC CHL
+# Paramètres: Van der Meershe
+# FAURE - 04/03/08
+# adapte version eco3m-R7
+#
+#------------------------------------------------------------------------
+#  on considere: 6 phytos (exprime en C, Chl, N et P), 
+#                3 nuts (NO3,NH4,PO4), et de la MOD  (exprime en N et P)
+#-------------------------------------------------------------------------
+#
+# Consignes Generales IMPORTANTES: 
+# --------------------------------
+# 1/commencer tjrs une ligne vide ou de commentaires
+#    par un # sur le premier caractere de la ligne
+# 2/ ne rien ecrire sur une ligne de donnees apres celles-ci
+# 3/ separer les differentes variables qui apparaissent sur une
+#    meme ligne par un : sans laisser d'espace
+# 4/ les noms des compartiments sont imposes et a choisir parmi:
+#    zoo / phy / bac / det / mod / mid / mip
+#    EN RESPECTANT CET ORDRE
+# 5/ les noms des sous compartiments ne doivent pas contenir
+#    d'espaces et ne pas exceder 10 caracteres
+# 6/ Toutes les variables en chaine de caractere doivent etre ecrites 
+#    en miniscule,sauf les elements et molecules chimiques qui doivent
+#    etre ecrits classiquement comme suit: C,N,P,Si,Fe,Chl,NO3,NH4,O2,Zn...
+# 7/ si une des lignes de donnees depasse la valeur de L_CHAIN dans
+#    le fichier mod_fchain.f90, il faut augmenter L_CHAIN dans ce fichier
+#
+# -----------------------------------------------------------------------
+# Cas traite (ce n'est qu'un exemple)
+# ------------------------------------
+#  1 phyto(C,N,Chl), 1 nut: NO3  et un zoo(C,N)
+#  PPB limite par nut via quotats cellulaires : f_lim(f_Q)
+#  f_Q = (Q-Qmin)/(Qmax-Qmin)
+#  Modele de Geider 98 pour d(Chl)/dt 
+#  grazing = Modele de Beddington (1975)
+#
+# -------------- Introduction des variables -----------------------
+#
+# Suffixe caracterisant la simulation (chaine de 10 caracteres au max)
+Rhoma
+# Temps de la simulation (jour):pas de temps (sec):pas de tps de sauvegarde biogeochimie (mn)
+#0.1:1200:1440
+#365:300:10
+2190:300:10
+#1000.0:1200:360
+# dimensio spatiales (nx_min,nxmax,ny_min,ny_max,nz) si utilisation 0D mais
+# a remplir aussi en 3D meme si ces donnees viennent du code physique:
+#110:280:0:90:10
+1:1:1:1:1
+#
+# nom du fichier donnant l'irradiance ou le PAR:intervalle de temps (en mn) entre 2 donnees
+# ----------------------------------------------------------------------------------------
+# IMPORTANT: max 12 caracteres pour ce nom de fichier qui doit etre dans le repertoire DATA.
+# IMPORTANT: s'il s'agit d'irradiances nommer le fichier IRR_nom_a_choisir
+# s'il s'agit de valeurs de PAR (Photosynthesis Active Radiation) nommer le fichier PAR_nom_a_choisir
+#
+# sinon, si on veut generer l'intensite lumineuse a l'aide d'une fonction,
+# ecrire IRR_FONCTION a la place du nom du fichier suivi de la valeur en
+# W/m2 de l'irradiance incidente maximale (midi solaire) et du pas de temps
+# en minute de lecture ou calcul de l'irradiance
+#
+# derniere possibilite: Eco3M est couple a une code physique et l'irradiance a la surface 
+# provient du code physique auquel cas ecrire IRR_CODEPHYS
+#
+#IRR_C6:60:0.46:0.05:0.75
+#IRR_FONCTION:290:30:0.46:0.05:0.75
+#IRR_FONCTION:180:10:0.43:0.05:1.0
+#IRR_CODEPHYS:0.43:0.05:1.0
+IRR_2017_6ans:10:0.43:0.05:1.0
+#
+#  fonction permettant de calculer le coefficient d'extinction lumineuse:
+#f_lum(0.0384>0.01)
+#f_extinc(0.0384>0.029)
+#-- numerotation maille sur la verticale: si nz_max = surface de l'eau ecrire
+# SURF sinon ecrire FOND
+#SURF
+#
+#
+######## DONNEES SPECIFIQUES AU MODELE BIOGEOCHIMIQUE:
+#
+# nb de compart.(classes), de sous compart., et de var. d''etat au total
+5:14:26
+# nom du 1er compart. et nb de ss-compart. correspondts
+#
+phy:2				
+pico:C:N:P:Chl
+dia:C:N:P:Chl
+bac:1
+bacteries:C:N:P
+det:1
+detritus:C:N:P
+mod:1
+dissous:C:N:P
+#
+mid:9
+nh4:nh4
+no3:no3
+po4:po4
+O2:O2
+dic:dic
+pco2:pco2
+pH:pH
+at:at
+aco3:aco3
+# -----------------------------------------------------------------
+#
+##########################
+# MATRICE DE FLUX : 
+# matrice diagonale representant les interactions entre variables d'etat
+#
+# Consignes importantes:
+# ---------------------
+# 1/ commencer par introduire le nb DE PROCESSUS CUMULES
+# 2/ ne remplir que la partie superieure droite de la matrice (sans diagonale):
+# ligne 1 : FLUX de var(1) vers var(2) a var(nbvar)
+# ligne 2 : FLUX de var(2) vers var(3) a var(nbvar)
+# etc...
+# a rentrer sous la forme ili;jcol:signe;proc(listeparam separes par des ">")
+# 3/ FINIR PAR l'instruction "finflux"
+# 4/ Si un FLUX comporte plusieurs processus, les separer par des ":"
+# 5/ Si aucun processus ne relie 2 variables, ne pas le citer
+#
+#-------------- Introduction des variables ------------------------
+# nb cumule de fonctions de processus utilises dans l'ensemble des  
+# cellules de la matrice :
+31
+# matrice FLUX:
+# PICO C <-- DIC photosynthese & respiration autotrophe
+PICO_C;DIC:-;gppg(MUMAXA_PICO>T_PICO>T_LAT_PICO>BETA_PICO>Q_MIN_NC_PICO>Q_MAX_NC_PICO>Q_MIN_PC_PICO>Q_MAX_PC_PICO>Q_MIN_NCHL_PICO>Q_MAX_NCHL_PICO>ALPHA_PICO):+;resp(RESP_PICO)
+# DIA C <-- DIC photosynthese & respiration autotrophe
+DIAT_C;DIC:-;gppg(MUMAXA_DIAT>T_DIAT>T_LAT_DIAT>BETA_DIAT>Q_MIN_NC_DIAT>Q_MAX_NC_DIAT>Q_MIN_PC_DIAT>Q_MAX_PC_DIAT>Q_MIN_NCHL_DIAT>Q_MAX_NCHL_DIAT>ALPHA_DIAT):+;resp(RESP_DIAT)
+#
+# PICO N <-- NH4 assimilation
+PICO_N;AMMO:-;uptv(Q_MAX_NC_PICO>Q_MIN_NC_PICO>COEF_PICO>UP_PICO>K_PICO_AMMO)
+# PICO N <-- NO3 assimilation
+PICO_N;NIT:-;uptv(Q_MAX_NC_PICO>Q_MIN_NC_PICO>COEF_PICO>UP_PICO>K_PICO_NIT)   
+# PICO P --> PO4 assimilation
+PICO_P;PHOS:-;uptv(Q_MAX_PC_PICO>Q_MIN_PC_PICO>COEF_PICO>UP_PICO>K_PICO_PHOS)
+# DIA N <-- NH4 assimilation
+DIAT_N;AMMO:-;uptv(Q_MAX_NC_DIAT>Q_MIN_NC_DIAT>COEF_DIAT>UP_DIAT>K_DIAT_AMMO)
+# DIA N <-- NO3 assimilation
+DIAT_N;NIT:-;uptv(Q_MAX_NC_DIAT>Q_MIN_NC_DIAT>COEF_DIAT>UP_DIAT>K_DIAT_NIT)  
+# DIA P --> PO4 assimilation
+DIAT_P;PHOS:-;uptv(Q_MAX_PC_DIAT>Q_MIN_PC_DIAT>COEF_DIAT>UP_DIAT>K_DIAT_PHOS)
+#
+# PICO C --> COD exsudation
+PICO_C;MOD_C:+;exud()
+# DIA C --> COD exsudation
+DIAT_C;MOD_C:+;exud()
+# PICO N --> NOD exsudation
+PICO_N;MOD_N:+;exud()
+# DIA N --> NOD exsudation
+DIAT_N;MOD_N:+;exud()
+# PICO P --> POD exsudation
+PICO_P;MOD_P:+;exud()
+# DIA P --> POD exsudation
+DIAT_P;MOD_P:+;exud()
+#
+# BACT C --> DIC respiration heterotrophe
+BACT_C;DIC:+;resp_bac(MUMAX_BACT>Q_MIN_C_BACT>Q_MIN_N_BACT>Q_MIN_P_BACT>QTEN>T_REMIN>BACT_C>BACT_N>BACT_P)
+# BACT C <-- COP assimilation
+BACT_C;MOP_C:-;uptbactd(VMAX_PARC_BACT>K_BACT_POC>QTEN>T_REMIN) 
+# BACT C <-- COD assimilation
+BACT_C;MOD_C:-;uptbactd(VMAX_DISC_BACT>K_BACT_DOC>QTEN>T_REMIN)     
+#
+# BACT N <-- NOP assimilation
+BACT_N;MOP_N:-;uptbactd(VMAX_PARN_BACT>K_BACT_PON>QTEN>T_REMIN)  
+# BACT N <-- NOD assimilation
+BACT_N;MOD_N:-;uptbactd(VMAX_DISN_BACT>K_BACT_DON>QTEN>T_REMIN)
+# BACT N <-- NH4 assimilation & mineralisation
+BACT_N;AMMO:-;uptbactd(VMAX_DISN_BACT>K_BACT_NH4>QTEN>T_REMIN):+;remin(VMAX_DISN_BACT>VMAX_PARN_BACT>K_BACT_DON>K_BACT_NH4>QTEN>T_REMIN>Q_MIN_N_BACT>Q_MAX_N_BACT)
+#
+# BACT P <-- POP assimilation
+BACT_P;MOP_P:-;uptbactd(VMAX_PARP_BACT>K_BACT_POP>QTEN>T_REMIN)
+# BACT P <-- POD assimilation
+BACT_P;MOD_P:-;uptbactd(VMAX_DISP_BACT>K_BACT_DOP>QTEN>T_REMIN)
+# BACT P <-- PO4 assimilation & mineralisation
+BACT_P;PHOS:-;uptbactd(VMAX_DISP_BACT>K_BACT_PO4>QTEN>T_REMIN):+;remin(VMAX_DISP_BACT>VMAX_PARP_BACT>K_BACT_DOP>K_BACT_PO4>QTEN>T_REMIN>Q_MIN_P_BACT>Q_MAX_P_BACT)
+
+# NH4 --> NO3
+AMMO;NIT:+;nit(V_NIT>QTEN>T_NIT>KOXY_NIT) 
+#
+#DIC respiration du zoo
+DOXY;DIC:+;out_modn(D_C>E_DIC>K_ZOO_POC>GRA_PICO>GRA_DIAT>MUMAX_BACT>Q_MIN_C_BACT>Q_MIN_N_BACT>Q_MIN_P_BACT>QTEN>T_REMIN>BACT_C>BACT_N>BACT_P)
+#
+# DIC --> CaCO3
+DIC;CACO3:-;disscarbo(K_DISS):+;precipcarbo(K_PREC>K_CACO3)
+#
+finflux
+#------------------------------------------------------------------
+##########################
+# VECTEUR SELF: Ce vecteur contient les termes source ou puit  
+# supplementaires dont l'origine ou la destination ne fait pas 
+# partie des variables d'etat du modele
+#
+# Consignes importantes:
+# ---------------------
+# 1/ Meme principe que pour la matrice FLUX sauf que cette fois,
+#    le flux est positif s'il alimente var(i)
+# 2/ Si un FLUX comporte plusieurs processus, les separer par des ";"
+# 3/ Si le flux SELF(i) augment var(i), alors il doit etre positif
+# 4/ FINIR PAR l'instruction "finself"
+#
+#-------------- Introduction des variables ------------------------
+# nb cumule de processus utilises dans chaque cellule du vecteur 
+32
+# PICO C pertes par broutage
+PICO_C:-;gra(GRA_PICO>GRA_DIAT) 
+# DIA C pertes par broutage
+DIAT_C:-;gra(GRA_PICO>GRA_DIAT) 
+# PICO N pertes par broutage
+PICO_N:-;gra(GRA_PICO>GRA_DIAT)
+# DIA N pertes par broutage
+DIAT_N:-;gra(GRA_PICO>GRA_DIAT)
+# PICO P pertes par broutage
+PICO_P:-;gra(GRA_PICO>GRA_DIAT)
+# DIA P pertes par broutage
+DIAT_P:-;gra(GRA_PICO>GRA_DIAT)
+# BACT C pertes par broutage
+BACT_C:-;grac(MUMAX_BACT>Q_MIN_C_BACT>Q_MIN_N_BACT>Q_MIN_P_BACT>QTEN>T_REMIN>BACT_C>BACT_N>BACT_P)
+# BACT N pertes par broutage
+BACT_N:-;grac(MUMAX_BACT>Q_MIN_C_BACT>Q_MIN_N_BACT>Q_MIN_P_BACT>QTEN>T_REMIN>BACT_C>BACT_N>BACT_P)
+# BACT P pertes par broutage
+BACT_P:-;grac(MUMAX_BACT>Q_MIN_C_BACT>Q_MIN_N_BACT>Q_MIN_P_BACT>QTEN>T_REMIN>BACT_C>BACT_N>BACT_P)
+# COP matiere non assimilee par le zoo, pertes par broutage, pelotes fecales 
+MOP_C:+;out_det(D_C>GRA_PICO>GRA_DIAT>MUMAX_BACT>Q_MIN_C_BACT>Q_MIN_N_BACT>Q_MIN_P_BACT>QTEN>T_REMIN>BACT_C>BACT_N>BACT_P):-;gra_det(GRA_PICO>GRA_DIAT):+;p_zoo(D_C>K_ZOO_POC>GRA_PICO>GRA_DIAT>MUMAX_BACT>Q_MIN_C_BACT>Q_MIN_N_BACT>Q_MIN_P_BACT>QTEN>T_REMIN>BACT_C>BACT_N>BACT_P)
+# NOP matiere non assimilee par le zoo, pertes par broutage, pelotes fecales 
+MOP_N:+;out_det(D_N>GRA_PICO>GRA_DIAT>MUMAX_BACT>Q_MIN_C_BACT>Q_MIN_N_BACT>Q_MIN_P_BACT>QTEN>T_REMIN>BACT_C>BACT_N>BACT_P):-;gra_det(GRA_PICO>GRA_DIAT):+;p_zoo(D_N>K_ZOO_PON>GRA_PICO>GRA_DIAT>MUMAX_BACT>Q_MIN_C_BACT>Q_MIN_N_BACT>Q_MIN_P_BACT>QTEN>T_REMIN>BACT_C>BACT_N>BACT_P)
+# POP matiere non assimilee par le zoo, pertes par broutage, pelotes fecales
+MOP_P:+;out_det(D_P>GRA_PICO>GRA_DIAT>MUMAX_BACT>Q_MIN_C_BACT>Q_MIN_N_BACT>Q_MIN_P_BACT>QTEN>T_REMIN>BACT_C>BACT_N>BACT_P):-;gra_det(GRA_PICO>GRA_DIAT):+;p_zoo(D_P>K_ZOO_POP>GRA_PICO>GRA_DIAT>MUMAX_BACT>Q_MIN_C_BACT>Q_MIN_N_BACT>Q_MIN_P_BACT>QTEN>T_REMIN>BACT_C>BACT_N>BACT_P)
+# COD excretion du zoo, 
+MOD_C:+;out_modn(D_C>E_DIC>K_ZOO_POC>GRA_PICO>GRA_DIAT>MUMAX_BACT>Q_MIN_C_BACT>Q_MIN_N_BACT>Q_MIN_P_BACT>QTEN>T_REMIN>BACT_C>BACT_N>BACT_P)
+# NOD excretion du zoo
+MOD_N:+;out_modn(D_N>E_NH4>K_ZOO_PON>GRA_PICO>GRA_DIAT>MUMAX_BACT>Q_MIN_C_BACT>Q_MIN_N_BACT>Q_MIN_P_BACT>QTEN>T_REMIN>BACT_C>BACT_N>BACT_P)
+# POD excretion du zoo
+MOD_P:+;out_modn(D_P>E_PO4>K_ZOO_POP>GRA_PICO>GRA_DIAT>MUMAX_BACT>Q_MIN_C_BACT>Q_MIN_N_BACT>Q_MIN_P_BACT>QTEN>T_REMIN>BACT_C>BACT_N>BACT_P)
+# NH4 excretion du zoo
+AMMO:+;out_modn(D_N>E_NH4>K_ZOO_PON>GRA_PICO>GRA_DIAT>MUMAX_BACT>Q_MIN_C_BACT>Q_MIN_N_BACT>Q_MIN_P_BACT>QTEN>T_REMIN>BACT_C>BACT_N>BACT_P)
+# PO4 excretion du zoo
+PHOS:+;out_modn(D_P>E_PO4>K_ZOO_POP>GRA_PICO>GRA_DIAT>MUMAX_BACT>Q_MIN_C_BACT>Q_MIN_N_BACT>Q_MIN_P_BACT>QTEN>T_REMIN>BACT_C>BACT_N>BACT_P)
+#O2 nitrification, photosynthese
+DOXY:-NQ;nit(V_NIT>QTEN>T_NIT>KOXY_NIT):+;prodO2():+;aera(K600)
+#CO2 aeration
+DIC:+;aera(K600)
+#AT nitrification, dissolution et precipitation des carbonates
+AT:+QTEN;disscarbo(K_DISS):-QTEN;precipcarbo(K_PREC>K_CACO3):-QTEN;nit(V_NIT>QTEN>T_NIT>KOXY_NIT):+;uptv(Q_MAX_NC_PICO>Q_MIN_NC_PICO>COEF_PICO>UP_PICO>K_PICO_AMMO):+;remin(VMAX_DISN_BACT>VMAX_PARN_BACT>K_BACT_DON>K_BACT_NH4>QTEN>T_REMIN>Q_MIN_N_BACT>Q_MAX_N_BACT)
+#
+#
+finself
+#------------------------------------------------------------------
+#########################
+# Rapport  Chlorophylle/Carbone  en (g chl)/(mol C) 
+#(0 = rapport constant et donne apres les ':'
+# et 1 = rapport variable calcule par le prog. mais a initialiser) :
+#0:0.225
+1
+#
+# A Revoir en fonction du fait que ce rapport devrait varier 
+# avec les especes de phyto !!!! 
+#########################
+# Nombre des points où sauvegarder le détail des flux biogeochimiques 
+1
+# Coordonnées de ces points sous la forme i:j:k
+1:1:1 
+#1:1:2 
+##120:5:6
+#
