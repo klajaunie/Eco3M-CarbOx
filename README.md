@@ -12,6 +12,6 @@ To run Eco3M-CarbOx:
     the time, time step, and save time of simulation
     variables 
     biogeochemical process 
-- Results files are stocked on "SORTIES" repertory
-- Boundary conditions and forcings data are stocked on "DATA" repertory
-- All subroutine of biogeochemical processes are stocked on "F_PROCESS" repertory 
+- Results files are stocked on "SORTIES" directory
+- Boundary conditions and forcings data are stocked on "DATA" directory
+- All subroutine of biogeochemical processes are stocked on "F_PROCESS" directory 
