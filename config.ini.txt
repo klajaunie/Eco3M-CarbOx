@@ -1,0 +1,213 @@
+#------------------------------------------------------------------------------------------------------
+#--------------------- CONIGURATION FILE OF ECO3M-CARBOX v1.1 -----------------------------------------
+#------------------------------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------------------------------
+# This version of v1.1 of Eco3M-CarbOx is used in the following study: 
+# Lajaunie-Salla et al.: Implementation and assessment of a carbonate system model (Eco3M-CarbOx v1.1)
+# in a highly-dynamic Mediterranean coastal site (Bay of Marseille, France), 
+# Geosci. Model Dev. Discuss., https://doi.org/10.5194/gmd-2020-41, in review, 2020. 
+# For further information on this version, please contac Drs. Frédéric DIAZ (frederic.diaz@univ-amu.fr
+# or Christel PINAZO (christel.pinazo@univ-amu.fr)
+#------------------------------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------------------------------
+# Eco3M-CarbOx (v1.1) considers 22 prognostic state variables : 2 groups of phytoplanktons (Carbon,
+# Chlorophyll, Nitrogen,Phosphorus),
+# 3 nutrients (NO3,NH4,PO4), Labile Dissolved Organic Matter LMOD (Carbon,Nitrogen,Phosphorus),
+# Detrital Particulate Organic Matter DPOM (Carbon,Nitrogen,Phosphorus)
+# Heterotroph Bacteria (Carbon,Nitrogen,Phosphorus),
+# Dissolved Oxygen and Carbonate system (Total Alkalinity, Dissolved Inorganic Carbon, partial pressure
+# of CO2, pH, Calcium Carbonate)
+# Zooplankton is in the present version an implicit state variable
+#------------------------------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------------------------------
+#-------------- Simulation features -------------------------------------------------------------------
+#
+# Simulation name (string of 10 characters maximum )
+Eco3m-COx
+# simulation time (days):time step (sec): time step of result storage (mn)
+2190:300:10
+# spatial dimension of spatial and vertical grid (nx_min,nxmax,ny_min,ny_max,nz)
+# if 0D use, put 1:1:1:1:1, if 3D use, put spatial and vertical dimensions of the hydrodynamics model
+1:1:1:1:1
+#------------------------------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------------------------------
+#-------- Name of the forcing file for irradiance or PAR (Photosynthetic Active Radiation) ------------
+# 
+# IMPORTANT: This file (string of 12 characters max) has to put in the  /DATA directory.
+# IMPORTANT: If it is a file of Irradiance, name the file IRR_name_of_file and
+# if it is a file of PAR values, PAR_name_of_file:time step of file reading (in min):
+# coeff. tranforming Irradiance to PAR(1. if PAR file):albedo:nb. of call to the file over a time step 
+#
+IRR_2017_6ans:10:0.43:0.05:1.0
+#------------------------------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------------------------------
+#------- SPECIFIC FEATURES FOR THE BUILDING OF BIOGEOCHEMICAL MODEL -----------------------------------
+#
+# Total number of compartments:subcompartiments:state variables
+5:14:26
+# Name of the compartment:nb of corresponding sub-compartments
+# Name of state variable composing the sub-compartment:currency
+#
+phy:2				
+pico:C:N:P:Chl
+dia:C:N:P:Chl
+#
+bac:1
+bacteries:C:N:P
+#
+det:1
+detritus:C:N:P
+#
+mod:1
+dissous:C:N:P
+#
+mid:9
+nh4:nh4
+no3:no3
+po4:po4
+O2:O2
+dic:dic
+pco2:pco2
+pH:pH
+at:at
+aco3:aco3
+#------------------------------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------------------------------
+#------------------------  MATRIX OF FLUXES BETWEEN TWO STATE VARIABLES ------------------------------- 
+#
+# Total nb of modeled processes considered in the matrix of fluxes
+31
+#
+# PICO-C <--> DIC (photosynthesis & autotroph respiration) 
+1;22:-;gppg(2.1007d-5>18.>11.>0.5>0.115>0.229>0.0015>0.0068>1.0000>2.2>8.2d-6):+;resp(1.15d-6)
+# DIA-C <--> DIC (photosynthesis & autotroph respiration)
+5;22:-;gppg(1.2234d-5>13.>9.>0.8>0.07>0.18>0.006>0.016>1.0000>2.7>5.0d-6):+;resp(1.15d-6)
+#
+# PICO-N <-- NH4 (uptake)
+2;18:-;uptv(0.229>0.115>1.0>1.000>0.07)
+# PICO-N <-- NO3 (uptake)
+2;19:-;uptv(0.229>0.115>1.0>1.000>0.73)   
+# PICO-P <-- PO4 (uptake)
+3;20:-;uptv(0.0068>0.0015>1.0>1.000>0.008)
+# DIA-N <-- NH4 (uptake)
+6;18:-;uptv(0.18>0.07>1.00>1.0000>0.015)
+# DIA-N <-- NO3 (uptake)
+6;19:-;uptv(0.18>0.07>1.00>1.0000>1.0)  
+# DIA-P <-- PO4 (uptake)
+7;20:-;uptv(0.016>0.006>1.00>1.0000>0.01)
+#
+# PICO-C --> DOC (exudation)
+1;15:+;exud()
+# DIA-C --> DOC (exudation)
+5;15:+;exud()
+# PICO-N --> DON (exudation)
+2;16:+;exud()
+# DIA-N --> DON (exudation)
+6;16:+;exud()
+# PICO-P --> DOP (exudation)
+3;17:+;exud()
+# DIA-P --> DOP (exudation)
+7;17:+;exud()
+#
+# BACT-C --> DIC (heterotroph respiration)
+9;22:+;resp_bac(9.68d-5>0.49>0.09>0.005>2.>20.>9>10>11)
+# BACT-C <-- POC (uptake)
+9;12:-;uptbactd(3.4d-7>10.0>2.>20.) 
+# BACT-C <-- DOC (uptake)
+9;15:-;uptbactd(1.89d-4>25.0>2.>20.)     
+#
+# BACT-N <-- PON (uptake)
+10;13:-;uptbactd(0.58d-6>0.5>2.>20.)  
+# BACT-N <-- DON (uptake) 
+10;16:-;uptbactd(3.72d-6>0.5>2.>20.)
+# BACT-N <--> NH4 (uptake & mineralisation)
+10;18:-;uptbactd(3.72d-6>0.15>2.>20.):+;remin(3.72d-6>0.58d-6>0.5>0.15>2.>20.>0.09>0.23)
+#
+# BACT-P <-- POP (uptake)
+11;14:-;uptbactd(1.16d-7>0.08>2.>20.)
+# BACT-P <-- DOP (uptake) 
+11;17:-;uptbactd(5.55d-6>0.08>2.>20.)
+# BACT-P <--> PO4 (uptake & mineralisation)
+11;20:-;uptbactd(5.55d-6>0.02>2.>20.):+;remin(5.55d-6>1.16d-7>0.08>0.02>2.>20.>0.005>0.02)
+#
+# NH4 --> NO3 (nitrification)
+18;19:+;nit(5.78d-7>2.>10.>30.0) 
+#
+# O2 --> DIC (implicit respiration of zooplankton)
+21;22:+;out_modn(0.92>0.31>0.4>1.6806d-05>9.7872d-06>9.68d-5>0.49>0.09>0.005>2.>20.>9>10>11)
+#
+# DIC <--> CaCO3 (precipitation & dissolution)
+22;26:-;disscarbo(1.2616d-04):+;precipcarbo(0.02>0.4)
+#
+# End of the fluxes matrix (finflux)
+finflux
+#------------------------------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------------------------------
+#------------------------  SELF VECTOR ----------------------------------------------------------------
+# SELF VECTOR : This vector includes the sink or source terms of a given state variable whose the 
+# origin and/or fate are not a state variable of the model  
+#
+# Total nb of modeled processes considered in the self vector
+32
+# PICO-C (losses by zooplankton grazing) 
+1:-;gra(1.6806d-05>9.7872d-06) 
+# DIA-C (losses by zooplankton grazing)
+5:-;gra(1.6806d-05>9.7872d-06) 
+# PICO-N (losses by zooplankton grazing)
+2:-;gra(1.6806d-05>9.7872d-06)
+# DIA-N (losses by zooplankton grazing)
+6:-;gra(1.6806d-05>9.7872d-06)
+# PICO-P (losses by zooplankton grazing)
+3:-;gra(1.6806d-05>9.7872d-06)
+# DIA-P (losses by zooplankton grazing)
+7:-;gra(1.6806d-05>9.7872d-06)
+# BACT-C (losses by zooplankton grazing)
+9:-;grac(9.68d-5>0.49>0.09>0.005>2.>20.>9>10>11)
+# BACT-N (losses by zooplankton grazing)
+10:-;grac(9.68d-5>0.49>0.09>0.005>2.>20.>9>10>11)
+# BACT-P (losses by zooplankton grazing)
+11:-;grac(9.68d-5>0.49>0.09>0.005>2.>20.>9>10>11)
+# POC (non assimilated matter by zooplankton, losses by grazing, fecal pellets production) 
+12:+;out_det(0.92>1.6806d-05>9.7872d-06>9.68d-5>0.49>0.09>0.005>2.>20.>9>10>11):-;gra_det(1.6806d-05>9.7872d-06):+;p_zoo(0.92>0.4>1.6806d-05>9.7872d-06>9.68d-5>0.49>0.09>0.005>2.>20.>9>10>11)
+# PON (non assimilated matter by zooplankton, losses by grazing, fecal pellets production) 
+13:+;out_det(0.95>1.6806d-05>9.7872d-06>9.68d-5>0.49>0.09>0.005>2.>20.>9>10>11):-;gra_det(1.6806d-05>9.7872d-06):+;p_zoo(0.95>0.445>1.6806d-05>9.7872d-06>9.68d-5>0.49>0.09>0.005>2.>20.>9>10>11)
+# POP (non assimilated matter by zooplankton, losses by grazing, fecal pellets production) 
+14:+;out_det(0.95>1.6806d-05>9.7872d-06>9.68d-5>0.49>0.09>0.005>2.>20.>9>10>11):-;gra_det(1.6806d-05>9.7872d-06):+;p_zoo(0.95>0.373>1.6806d-05>9.7872d-06>9.68d-5>0.49>0.09>0.005>2.>20.>9>10>11)
+# DOC (zooplankton excretion) 
+15:+;out_modn(0.92>0.31>0.4>1.6806d-05>9.7872d-06>9.68d-5>0.49>0.09>0.005>2.>20.>9>10>11)
+# DON (zooplankton excretion)
+16:+;out_modn(0.95>0.5>0.445>1.6806d-05>9.7872d-06>9.68d-5>0.49>0.09>0.005>2.>20.>9>10>11)
+# DOP (zooplankton excretion)
+17:+;out_modn(0.95>0.50>0.373>1.6806d-05>9.7872d-06>9.68d-5>0.49>0.09>0.005>2.>20.>9>10>11)
+# NH4 (zooplankton excretion)
+18:+;out_modn(0.95>0.5>0.445>1.6806d-05>9.7872d-06>9.68d-5>0.49>0.09>0.005>2.>20.>9>10>11)
+# PO4 (zooplankton excretion)
+20:+;out_modn(0.95>0.50>0.373>1.6806d-05>9.7872d-06>9.68d-5>0.49>0.09>0.005>2.>20.>9>10>11)
+# O2 (losses by nitrification, photosynthesis production)
+21:-2.00;nit(5.78d-7>2.>10.>30.0):+;prodO2():+;aera(0.31)
+# CO2 (aeration)
+22:+;aera(0.31)
+# TA (nitrification, carbonate dissolution and precipitation, mineralisation, NH4 uptake)
+25:+2.;disscarbo(1.2616d-4):-2.;precipcarbo(0.02>0.4):-2.;nit(5.78d-7>2.>10.>30.0):+;uptv(0.229>0.115>1.0>1.000>0.07):+;remin(3.72d-6>0.58d-7>0.5>0.15>2.>20.>0.09>0.23)
+#
+# End of the self vector (finself)
+finself
+#------------------------------------------------------------------------------------------------------
+#---------------------  Chlorophyll-to-Carbon Ratio  in (g chl)/(mol C) ------------------------------- 
+# if 0 => constant ratio:value_of_ratio, if  1 => variable ratio comuted in the model
+#0:0.025
+1
+#
+#########################
+# Number of points for which biogeochemical fluxes have to be saved (1 in 0D configuraiton) 
+1
+# Coordinates of this point in the spatial grid of model (i:j:k), (1:1:1 if in 0D configuration)
+1:1:1 
+#
